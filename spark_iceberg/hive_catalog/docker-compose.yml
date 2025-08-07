@@ -1,0 +1,46 @@
+version: '3.5'
+
+services:
+  spark-iceberg:
+    image: tabulario/spark-iceberg
+    container_name: spark-iceberg
+    build: spark/
+    networks:
+      iceberg_net:
+    depends_on:
+      - hive
+    volumes:
+      - warehouse_data:/home/iceberg/warehouse
+      - notebooks_data:/home/iceberg/notebooks/notebooks
+      - ./spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
+      - ./spark_iceberg.py:/home/iceberg/spark_iceberg.py
+    environment:
+      - AWS_ACCESS_KEY_ID=admin
+      - AWS_SECRET_ACCESS_KEY=password
+      - AWS_REGION=us-east-1
+    ports:
+      - 8888:8888
+      - 8080:8080
+      - 10000:10000
+      - 10001:10001
+
+  hive:
+    image: apache/hive:4.0.0
+    container_name: hive
+    environment:
+      - SERVICE_NAME=metastore
+    ports:
+      - 9083:9083
+    networks:
+      iceberg_net:
+        aliases:
+          - hive
+    volumes:
+      - warehouse_data:/home/iceberg/warehouse
+
+networks:
+  iceberg_net:
+
+volumes:
+  warehouse_data: {}
+  notebooks_data: {}

@@ -14,13 +14,14 @@ Doc: https://milvus.io/docs
 Docker Compose: https://milvus.io/docs/install_standalone-docker-compose.md
 Path: `milvus/docker_compose/docker-compose.yml`
 Milvus UI: http://127.0.0.1:9091/webui/
-ToDo: Develop Python Code and TestContainer Testcase
 
 ## Spark Iceberg
 Doc: https://iceberg.apache.org/
 
 ### Run Spark Iceberg
 Docker Compose: https://iceberg.apache.org/spark-quickstart/#docker-compose
-Path: `spark_iceberg/docker-compose.yml`
+Hadoop Catalog: `spark_iceberg/hadoop_catalog/docker-compose.yml`
+Rest Catalog: `spark_iceberg/rest_catalog/docker-compose.yml`
+Hive Catalog: ToDo...
 Run Spark SQL: `spark-submit /home/iceberg/spark_iceberg.py`
 Minio UI: http://localhost:9001
