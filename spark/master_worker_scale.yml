@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  spark-master:
+    hostname: spark-master
+    image: apache/spark:3.5.5
+    entrypoint: [ "/opt/spark/bin/spark-class", "org.apache.spark.deploy.master.Master" ]
+    environment:
+      - PATH=/opt/spark/bin:$PATH
+    ports:
+      - 8080:8080
+      - 4040-4056:4040-4056
+    volumes:
+      - ./code:/opt/spark/work-dir/code:ro
+    networks:
+      - spark-network
+
+  spark-worker:
+    image: apache/spark:3.5.5
+    entrypoint: [ "/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://spark-master:7077" ]
+    ports:
+      - target: 8081
+        published: 0
+        protocol: tcp
+        mode: host
+    networks:
+      - spark-network
+    depends_on:
+      - spark-master
+
+networks:
+  spark-network:

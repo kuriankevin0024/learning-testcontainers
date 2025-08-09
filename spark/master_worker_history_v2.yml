@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  spark-master:
+    hostname: spark-master
+    image: apache/spark:3.5.5
+    entrypoint: [ "/opt/spark/bin/spark-class", "org.apache.spark.deploy.master.Master" ]
+    environment:
+      - PATH=/opt/spark/bin:$PATH
+    ports:
+      - 8080:8080
+      - 4040-4056:4040-4056
+    volumes:
+      - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
+      - ./spark-events:/opt/spark/work-dir/spark-events
+      - ./code:/opt/spark/work-dir/code:ro
+    networks:
+      - spark-network
+
+  spark-worker:
+    image: apache/spark:3.5.5
+    entrypoint: [ "/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://spark-master:7077" ]
+    environment:
+      - SPARK_PUBLIC_DNS=localhost
+    ports:
+      - 8081:8081
+    networks:
+      - spark-network
+    depends_on:
+      - spark-master
+
+  spark-history:
+    image: apache/spark:3.5.5
+    entrypoint: [ "/opt/spark/bin/spark-class", "org.apache.spark.deploy.history.HistoryServer" ]
+    environment:
+      - SPARK_HISTORY_OPTS=-Dspark.history.fs.logDirectory=/opt/spark/work-dir/spark-events
+    ports:
+      - 18080:18080
+    volumes:
+      - ./spark-events:/opt/spark/work-dir/spark-events:ro
+    networks:
+      - spark-network
+
+networks:
+  spark-network:

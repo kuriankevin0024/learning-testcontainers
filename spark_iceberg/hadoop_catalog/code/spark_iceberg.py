@@ -5,6 +5,8 @@ spark = SparkSession.builder.appName("SparkIceberg").getOrCreate()
 print('>>> show catalogs <<<')
 spark.sql('SHOW CATALOGS;').show()
 
+print('>>> create schema <<<')
+spark.sql("CREATE NAMESPACE IF NOT EXISTS iceberg_catalog.iceberg_schema;")
 print('>>> show schemas <<<')
 spark.sql('SHOW NAMESPACES IN iceberg_catalog;').show()
 

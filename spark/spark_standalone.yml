@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  spark-standalone:
+    hostname: spark-master
+    image: apache/spark:3.5.5
+    entrypoint: >
+      /bin/bash -c "
+        /opt/spark/sbin/start-master.sh &&
+        /opt/spark/sbin/start-worker.sh spark://spark-standalone:7077 &&
+        mkdir -p /opt/spark/work-dir/spark-events &&
+        /opt/spark/sbin/start-history-server.sh &&
+        exec sleep infinity
+      "
+    environment:
+      - PATH=/opt/spark/bin:$PATH
+      - SPARK_PUBLIC_DNS=localhost
+    ports:
+      - 8080:8080
+      - 4040-4056:4040-4056
+      - 8081:8081
+      - 18080:18080
+    volumes:
+      - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
+      - ./code:/opt/spark/work-dir/code:ro
