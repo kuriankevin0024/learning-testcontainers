@@ -50,7 +50,14 @@
 ### Run Hadoop Catalog
 * Start Spark Iceberg: `docker-compose -f spark_iceberg/hadoop_catalog/docker-compose.yml up -d`
 * Run Spark SQL: `spark-submit /home/iceberg/code/spark_iceberg.py`
-### Run Hadoop Catalog
+### Run Rest Catalog
 * Start Spark Iceberg: `docker-compose -f spark_iceberg/rest_catalog/docker-compose.yml up -d`
 * Run Spark SQL: `spark-submit /home/iceberg/code/spark_iceberg.py`
 * Minio UI: http://localhost:9001
+### Run Hive Catalog (Local)
+* Start Spark Iceberg: `docker-compose -f spark_iceberg/hive_catalog/local/docker-compose.yml up -d`
+* Exec into Spark Iceberg: `docker compose -f spark_iceberg/hive_catalog/docker-compose.yml exec spark-iceberg bash`
+* Run Spark SQL: `spark-submit /home/iceberg/code/spark_iceberg.py`
+### Run Hive Catalog
+* Start Spark Iceberg: `docker-compose -f spark_iceberg/hive_catalog/docker-compose.yml up -d`
+* Run Spark SQL: `spark-submit /home/iceberg/code/spark_iceberg.py`
