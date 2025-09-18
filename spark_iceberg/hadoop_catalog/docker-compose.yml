@@ -1,15 +1,12 @@
-version: '3.5'
-
 services:
   spark-iceberg:
     image: tabulario/spark-iceberg:3.5.5_1.8.1
-    container_name: spark-iceberg
     volumes:
       - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
       - ./code:/home/iceberg/code
     ports:
       - 8888:8888             # Jupyter Notebook UI
       - 8080:8080             # Spark Master UI
-      - 18080:18080           # Spark History Server UI
       - 4040-4056:4040-4056   # Spark Driver UI
       - 8081:8081             # Spark Worker UI
+      - 18080:18080           # Spark History Server UI

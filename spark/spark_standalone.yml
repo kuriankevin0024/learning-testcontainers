@@ -14,10 +14,10 @@ services:
       - PATH=/opt/spark/bin:$PATH
       - SPARK_PUBLIC_DNS=localhost
     ports:
-      - 8080:8080
-      - 4040-4056:4040-4056
-      - 8081:8081
-      - 18080:18080
+      - 8080:8080             # Spark Master UI
+      - 4040-4056:4040-4056   # Spark Driver UI
+      - 8081:8081             # Spark Worker UI
+      - 18080:18080           # Spark History Server UI
     volumes:
       - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
       - ./code:/opt/spark/work-dir/code:ro

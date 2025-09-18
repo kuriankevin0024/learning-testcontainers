@@ -7,13 +7,13 @@ spark.sql('SHOW CATALOGS;').show()
 
 print('>>> create schema <<<')
 spark.sql("CREATE NAMESPACE IF NOT EXISTS iceberg_catalog.iceberg_schema "
-          "LOCATION 's3a://warehouse/iceberg_schema';")
+          "LOCATION 's3://warehouse/iceberg_schema';")
 print('>>> show schemas <<<')
 spark.sql('SHOW NAMESPACES IN iceberg_catalog;').show()
 
 print('>>> create table <<<')
 spark.sql("CREATE TABLE IF NOT EXISTS iceberg_catalog.iceberg_schema.iceberg_table (id INT, name STRING, ts TIMESTAMP) "
-          "USING iceberg LOCATION 's3a://warehouse/iceberg_schema/iceberg_table';")
+          "USING iceberg LOCATION 's3://warehouse/iceberg_schema/iceberg_table';")
 print('>>> show tables <<<')
 spark.sql('SHOW TABLES IN iceberg_catalog.iceberg_schema;').show()
 
