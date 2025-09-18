@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   spark-standalone:
     hostname: spark-master
@@ -23,3 +21,8 @@ services:
     volumes:
       - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
       - ./code:/opt/spark/work-dir/code:ro
+    networks:
+      - spark-network
+
+networks:
+  spark-network:

@@ -10,6 +10,15 @@
 ## cursor chat history
 `cd ~/Library/Application\ Support/Cursor/User/workspaceStorage`
 
+## Milvus
+* Doc: https://milvus.io/docs
+* Docker Compose: https://milvus.io/docs/install_standalone-docker-compose.md
+### Run Milvus
+* Install Milvus Venv: `pip install -r milvus/requirements.txt`
+* Start Milvus Server: `docker-compose -f milvus/docker-compose.yml up -d`
+* Run Milvus Client: `python milvus/milvus_client.py`
+* Milvus UI: http://127.0.0.1:9091/webui/
+
 ## Spark
 * Doc: 
   * https://spark.apache.org/docs/latest/
@@ -26,16 +35,10 @@
   * History UI: http://localhost:18080/
   * Driver UI: http://localhost:4040/
   * Worker UI: http://localhost:8081/
-* eventLogs are only created by driver
+* eventLogs used by history server is only created by driver
 * Scale Workers:
   * `docker-compose -f spark/master_worker_scale.yml up -d --scale spark-worker=3`
   * navigation from MasterUI to WorkerUI breaks in scale
-
-## Milvus
-* Doc: https://milvus.io/docs
-* Docker Compose: https://milvus.io/docs/install_standalone-docker-compose.md
-* Path: `milvus/docker_compose/docker-compose.yml`
-* Milvus UI: http://127.0.0.1:9091/webui/
 
 # ----------------------------------------------------
 ## Spark Iceberg
