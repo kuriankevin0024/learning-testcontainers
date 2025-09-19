@@ -1,0 +1,75 @@
+services:
+  spark-iceberg:
+    image: tabulario/spark-iceberg:3.5.5_1.8.1
+    ports:
+      - 8888:8888
+      - 8080:8080
+      - 4040-4056:4040-4056
+      - 8081:8081
+      - 18080:18080
+      - 10000:10000
+      - 10001:10001
+    volumes:
+      - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
+      - ./code:/home/iceberg/code:ro
+      - warehouse_data:/home/iceberg/warehouse
+      - notebooks_data:/home/iceberg/notebooks/notebooks
+    networks:
+      iceberg_network:
+    depends_on:
+      - hive-metastore
+
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: metastore
+      POSTGRES_USER: hive
+      POSTGRES_PASSWORD: hivepw
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U hive -d metastore" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      iceberg_network:
+
+  hive-metastore-init:
+    image: apache/hive:4.0.0
+    entrypoint: [ "/opt/hive/bin/schematool", "-initSchema", "-dbType", "postgres", "-verbose" ]
+    volumes:
+      - ./config/hive-site.xml:/opt/hive/conf/hive-site.xml:ro
+      - ./drivers/postgresql-42.7.7.jar:/opt/hive/lib/postgresql.jar:ro
+    networks:
+      iceberg_network:
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  hive-metastore:
+    image: apache/hive:4.0.0
+    entrypoint: [ "/opt/hive/bin/hive", "--service", "metastore" ]
+    environment:
+      SERVICE_NAME: metastore
+    ports:
+      - 9083:9083
+    volumes:
+      - ./config/hive-site.xml:/opt/hive/conf/hive-site.xml:ro
+      - ./drivers/postgresql-42.7.7.jar:/opt/hive/lib/postgresql.jar:ro
+      - warehouse_data:/home/iceberg/warehouse
+    networks:
+      iceberg_network:
+    depends_on:
+      hive-metastore-init:
+        condition: service_completed_successfully
+
+networks:
+  iceberg_network:
+
+volumes:
+  warehouse_data:
+  notebooks_data:
+  postgres_data:

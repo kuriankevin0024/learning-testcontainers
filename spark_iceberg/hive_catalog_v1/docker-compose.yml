@@ -10,8 +10,8 @@ services:
       - 10000:10000
       - 10001:10001
     volumes:
-      - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
-      - ./code:/home/iceberg/code
+      - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
+      - ./code:/home/iceberg/code:ro
       - warehouse_data:/home/iceberg/warehouse
       - notebooks_data:/home/iceberg/notebooks/notebooks
     networks:

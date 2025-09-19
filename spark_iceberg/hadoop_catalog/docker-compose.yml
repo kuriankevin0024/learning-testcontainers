@@ -2,8 +2,8 @@ services:
   spark-iceberg:
     image: tabulario/spark-iceberg:3.5.5_1.8.1
     volumes:
-      - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf
-      - ./code:/home/iceberg/code
+      - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
+      - ./code:/home/iceberg/code:ro
     ports:
       - 8888:8888             # Jupyter Notebook UI
       - 8080:8080             # Spark Master UI

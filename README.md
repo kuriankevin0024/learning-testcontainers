@@ -57,7 +57,7 @@
 ### Run Hive Catalog (Local)
 * Start Spark Iceberg: `docker-compose -f spark_iceberg/hive_catalog/local/docker-compose.yml up -d`
 * Run Spark SQL: `spark-submit /home/iceberg/code/spark_iceberg.py`
-### Run Hive Catalog
+### Run Hive Catalog (Postgres)
 * Start Spark Iceberg: `docker-compose -f spark_iceberg/hive_catalog/docker-compose.yml up -d`
 * Exec into Spark Iceberg: `docker compose -f spark_iceberg/hive_catalog/docker-compose.yml exec spark-iceberg bash`
 * Run Spark SQL: `spark-submit /home/iceberg/code/spark_iceberg.py`
