@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-  <!-- Metastore DB (Postgres) -->
   <property>
     <name>javax.jdo.option.ConnectionURL</name>
     <value>jdbc:postgresql://postgres:5432/metastore</value>
@@ -18,7 +17,6 @@
     <value>hivepw</value>
   </property>
 
-  <!-- HMS behavior -->
   <property>
     <name>datanucleus.autoCreateSchema</name>
     <value>false</value>
@@ -28,9 +26,8 @@
     <value>false</value>
   </property>
 
-  <!-- Warehouse path visible to Spark & HMS -->
   <property>
     <name>hive.metastore.warehouse.dir</name>
-    <value>/warehouse</value>
+    <value>/home/iceberg/warehouse</value>
   </property>
 </configuration>

@@ -11,9 +11,9 @@ services:
       - 10001:10001
     volumes:
       - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
-      - ./code:/home/iceberg/code:ro
-      - warehouse_data:/home/iceberg/warehouse
-      - notebooks_data:/home/iceberg/notebooks/notebooks
+      - ../code:/home/iceberg/code:ro
+      - notebooks_data:/home/iceberg/notebooks/notebooks:rw
+      - warehouse_data:/home/iceberg/warehouse:rw
     networks:
       iceberg_network:
     depends_on:
@@ -26,7 +26,7 @@ services:
     ports:
       - 9083:9083
     volumes:
-      - warehouse_data:/home/iceberg/warehouse
+      - warehouse_data:/home/iceberg/warehouse:rw
     networks:
       iceberg_network:
 
@@ -34,5 +34,5 @@ networks:
   iceberg_network:
 
 volumes:
-  warehouse_data:
   notebooks_data:
+  warehouse_data:
