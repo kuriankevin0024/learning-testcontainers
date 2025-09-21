@@ -9,16 +9,16 @@
         <value>true</value>
     </property>
     <property>
-        <name>fs.s3a.connection.ssl.enabled</name>
-        <value>false</value>
-    </property>
-    <property>
         <name>fs.s3a.access.key</name>
         <value>admin</value>
     </property>
     <property>
         <name>fs.s3a.secret.key</name>
         <value>password</value>
+    </property>
+    <property>
+        <name>fs.s3a.connection.ssl.enabled</name>
+        <value>false</value>
     </property>
     <property>
         <name>fs.s3a.aws.credentials.provider</name>

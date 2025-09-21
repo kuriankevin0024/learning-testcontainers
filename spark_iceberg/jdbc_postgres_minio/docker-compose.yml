@@ -11,28 +11,32 @@ services:
       - 10001:10001
     volumes:
       - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
+      - ./jars:/opt/spark/extra-jars:ro
       - ../code:/home/iceberg/code:ro
       - notebooks_data:/home/iceberg/notebooks/notebooks:rw
     networks:
       iceberg_network:
     depends_on:
-      rest:
-        condition: service_started
+      postgres:
+        condition: service_healthy
       minio:
         condition: service_started
 
-  rest:
-    image: apache/iceberg-rest-fixture:1.10.0
+  postgres:
+    image: postgres:17
     environment:
-      - AWS_REGION=us-east-1
-      - AWS_ACCESS_KEY_ID=admin
-      - AWS_SECRET_ACCESS_KEY=password
-      - CATALOG_WAREHOUSE=s3://warehouse/
-      - CATALOG_S3_ENDPOINT=http://minio:9000
-      - CATALOG_IO__IMPL=org.apache.iceberg.aws.s3.S3FileIO
-      - CATALOG_S3_PATH__STYLE__ACCESS=true
+      POSTGRES_DB: metastore
+      POSTGRES_USER: jdbcuser
+      POSTGRES_PASSWORD: jdbcpassword
     ports:
-      - 8181:8181
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data:rw
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U jdbcuser -d metastore" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
     networks:
       iceberg_network:
 
@@ -75,4 +79,5 @@ networks:
 
 volumes:
   notebooks_data:
+  postgres_data:
   minio_data:

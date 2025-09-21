@@ -1,10 +1,6 @@
 services:
   spark-iceberg:
     image: tabulario/spark-iceberg:3.5.5_1.8.1
-    environment:
-      - AWS_ACCESS_KEY_ID=admin
-      - AWS_SECRET_ACCESS_KEY=password
-      - AWS_REGION=us-east-1
     ports:
       - 8888:8888
       - 8080:8080
@@ -29,14 +25,14 @@ services:
     image: postgres:17
     environment:
       POSTGRES_DB: metastore
-      POSTGRES_USER: hive
-      POSTGRES_PASSWORD: hivepw
+      POSTGRES_USER: hiveuser
+      POSTGRES_PASSWORD: hivepassword
     ports:
       - 5432:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data:rw
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U hive -d metastore" ]
+      test: [ "CMD-SHELL", "pg_isready -U hiveuser -d metastore" ]
       interval: 5s
       timeout: 3s
       retries: 20
