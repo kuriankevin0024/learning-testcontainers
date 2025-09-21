@@ -7,6 +7,8 @@ services:
       - 4040-4056:4040-4056   # Spark Driver UI
       - 8081:8081             # Spark Worker UI
       - 18080:18080           # Spark History Server UI
+      - 10000:10000           # Spark JDBC Endpoint
+      - 10001:10001           # Spark Rest Endpoint
     networks:
       iceberg_network:
 
