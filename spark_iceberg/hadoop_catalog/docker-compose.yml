@@ -9,6 +9,11 @@ services:
       - 18080:18080           # Spark History Server UI
       - 10000:10000           # Spark JDBC Endpoint
       - 10001:10001           # Spark Rest Endpoint
+    volumes:
+      - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
+      - ../code:/home/iceberg/code:ro
+      - notebooks_data:/home/iceberg/notebooks/notebooks:rw
+      - warehouse_data:/home/iceberg/warehouse:rw
     networks:
       iceberg_network:
 
