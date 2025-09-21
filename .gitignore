@@ -8,3 +8,6 @@ __pycache__/
 
 # IDE Files
 .idea/
+
+# appliation files
+*.jar

@@ -48,6 +48,6 @@
   * Spark Worker UI: http://localhost:8081/
   * Spark History UI: http://localhost:18080/
 ## Commands
-* Start Spark Iceberg: `docker-compose -f spark_iceberg/hadoop_local_local/docker-compose.yml up -d`
-* Exec into Spark Iceberg: `docker compose -f spark_iceberg/hadoop_local_local/docker-compose.yml exec spark-iceberg bash`
+* Start Spark Iceberg: `docker-compose -f spark_iceberg/hive_postgres_minio/docker-compose.yml up -d`
+* Exec into Spark Iceberg: `docker compose -f spark_iceberg/hive_postgres_minio/docker-compose.yml exec spark-iceberg bash`
 * Run Spark SQL: `spark-submit /home/iceberg/code/spark_iceberg.py`

@@ -1,0 +1,121 @@
+services:
+  spark-iceberg:
+    image: tabulario/spark-iceberg:3.5.5_1.8.1
+    environment:
+      - AWS_ACCESS_KEY_ID=admin
+      - AWS_SECRET_ACCESS_KEY=password
+      - AWS_REGION=us-east-1
+    ports:
+      - 8888:8888
+      - 8080:8080
+      - 4040-4056:4040-4056
+      - 8081:8081
+      - 18080:18080
+      - 10000:10000
+      - 10001:10001
+    volumes:
+      - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
+      - ../code:/home/iceberg/code:ro
+      - notebooks_data:/home/iceberg/notebooks/notebooks:rw
+    networks:
+      iceberg_network:
+    depends_on:
+      hive-metastore:
+        condition: service_started
+      minio:
+        condition: service_started
+
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: metastore
+      POSTGRES_USER: hive
+      POSTGRES_PASSWORD: hivepw
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data:rw
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U hive -d metastore" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      iceberg_network:
+
+  hive-metastore-init:
+    image: apache/hive:4.0.0
+    entrypoint: [ "/opt/hive/bin/schematool", "-initSchema", "-dbType", "postgres", "-verbose" ]
+    environment:
+      - HADOOP_CONF_DIR=/opt/hive/conf
+      - HIVE_AUX_JARS_PATH=/opt/hive/external_jars
+    volumes:
+      - ./config:/opt/hive/conf:ro
+      - ./jars:/opt/hive/external_jars:ro
+    networks:
+      iceberg_network:
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  hive-metastore:
+    image: apache/hive:4.0.0
+    entrypoint: [ "/opt/hive/bin/hive", "--service", "metastore" ]
+    environment:
+      SERVICE_NAME: metastore
+      HADOOP_CONF_DIR: /opt/hive/conf
+      HIVE_AUX_JARS_PATH: /opt/hive/external_jars
+    volumes:
+      - ./config:/opt/hive/conf:ro
+      - ./jars:/opt/hive/external_jars:ro
+    ports:
+      - 9083:9083
+    networks:
+      iceberg_network:
+    depends_on:
+      hive-metastore-init:
+        condition: service_completed_successfully
+      mc:
+        condition: service_started
+
+  minio:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+    command: [ "server", "/data", "--console-address", ":9001" ]
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=password
+    ports:
+      - 9001:9001
+      - 9000:9000
+    volumes:
+      - minio_data:/data:rw
+    networks:
+      iceberg_network:
+
+  mc:
+    image: minio/mc:RELEASE.2025-08-13T08-35-41Z
+    entrypoint: |
+      /bin/sh -c "
+      until (/usr/bin/mc alias set minio http://minio:9000 admin password) do echo '...waiting...' && sleep 1; done;
+      /usr/bin/mc rm -r --force minio/warehouse;
+      /usr/bin/mc mb minio/warehouse;
+      /usr/bin/mc policy set public minio/warehouse;
+      tail -f /dev/null
+      "
+    environment:
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=admin
+      - AWS_SECRET_ACCESS_KEY=password
+    networks:
+      iceberg_network:
+    depends_on:
+      minio:
+        condition: service_started
+
+networks:
+  iceberg_network:
+
+volumes:
+  notebooks_data:
+  postgres_data:
+  minio_data:
